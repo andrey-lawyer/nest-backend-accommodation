@@ -17,7 +17,7 @@ import { Accommodation } from './accommodations/accommodation.entity';
       envFilePath: ['.env.local'],
     }),
     ServeStaticModule.forRoot({
-      rootPath: path.resolve(__dirname, 'static'),
+      rootPath: path.resolve(__dirname, '..', 'static'),
     }),
     TypeOrmModule.forRoot({
       type: 'postgres',
