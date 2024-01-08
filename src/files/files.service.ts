@@ -31,7 +31,7 @@ export class FilesService {
         },
       );
 
-      return uploadResult.url;
+      return uploadResult.secure_url;
     } catch (e) {
       console.error('Error processing file:', e);
       throw new HttpException(
