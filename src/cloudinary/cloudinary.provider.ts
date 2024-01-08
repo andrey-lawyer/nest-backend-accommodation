@@ -5,9 +5,9 @@ export const CloudinaryProvider = {
   provide: CLOUDINARY,
   useFactory: async (): Promise<typeof v2> => {
     const cloudinaryConfig: ConfigOptions = {
-      cloud_name: 'dfabwuifs',
-      api_key: '347249973353644',
-      api_secret: 'qG6atx3_ISW2Tm0mzqyApsszCPk',
+      cloud_name: process.env.CLOUD_NAME,
+      api_key: process.env.CLOUD_API_KEY,
+      api_secret: process.env.CLOUD_API_SECRET,
     };
 
     v2.config(cloudinaryConfig);
