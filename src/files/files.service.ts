@@ -1,25 +1,41 @@
+import { Readable } from 'stream';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { randomUUID } from 'crypto';
-import * as fs from 'fs';
-import * as path from 'path';
+import { v2, UploadApiErrorResponse, UploadApiResponse } from 'cloudinary';
 
 @Injectable()
 export class FilesService {
   async createFile(file: Express.Multer.File): Promise<string> {
     try {
-      const randomId = randomUUID();
+      const stream = new Readable();
+      stream.push(file.buffer);
+      stream.push(null);
 
-      const fileName = `${randomId}_${file.originalname}`;
+      const uploadResult = await new Promise<UploadApiResponse>(
+        (resolve, reject) => {
+          const uploadStream = v2.uploader.upload_stream(
+            { resource_type: 'auto' },
+            (
+              error: UploadApiErrorResponse | undefined,
+              result: UploadApiResponse | undefined,
+            ) => {
+              if (error) {
+                reject(error);
+              }
+              if (result) {
+                resolve(result);
+              }
+            },
+          );
 
-      const filePath = path.resolve(__dirname, '..', 'static');
-      if (!fs.existsSync(filePath)) {
-        fs.mkdirSync(filePath, { recursive: true });
-      }
-      fs.writeFileSync(path.join(filePath, fileName), file.buffer);
-      return fileName;
+          stream.pipe(uploadStream);
+        },
+      );
+
+      return uploadResult.url;
     } catch (e) {
+      console.error('Error processing file:', e);
       throw new HttpException(
-        'error writing file',
+        'Error processing file',
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }

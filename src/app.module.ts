@@ -1,23 +1,19 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { ServeStaticModule } from '@nestjs/serve-static';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { APP_FILTER } from '@nestjs/core';
-import * as path from 'path';
 
 import { AccommodationsModule } from './accommodations/accommodations.module';
 import { FilesModule } from './files/files.module';
 import { ErrorFilter } from './errors-filter/errors-filter';
 
 import { Accommodation } from './accommodations/accommodation.entity';
+import { CloudinaryModule } from './cloudinary/cloudinary.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       envFilePath: ['.env.local'],
-    }),
-    ServeStaticModule.forRoot({
-      rootPath: path.resolve(__dirname, '..', 'static'),
     }),
     TypeOrmModule.forRoot({
       type: 'postgres',
@@ -31,6 +27,7 @@ import { Accommodation } from './accommodations/accommodation.entity';
     }),
     AccommodationsModule,
     FilesModule,
+    CloudinaryModule,
   ],
   providers: [
     {
