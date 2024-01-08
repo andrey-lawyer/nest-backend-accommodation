@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
@@ -26,8 +30,31 @@ export class AccommodationsService {
     return newAccommodation;
   }
 
-  async findAll(): Promise<Accommodation[]> {
-    return this.accommodationsRepository.find({});
+  async findAll(
+    cost: string,
+    accommodationType: string,
+  ): Promise<Accommodation[]> {
+    const query =
+      this.accommodationsRepository.createQueryBuilder('accommodation');
+
+    if (cost) {
+      const numericCost = parseFloat(cost);
+      if (!isNaN(numericCost)) {
+        query.andWhere('CAST(accommodation.cost AS DECIMAL) <= :cost', {
+          cost: numericCost,
+        });
+      } else {
+        throw new BadRequestException('Invalid cost value');
+      }
+    }
+
+    if (accommodationType) {
+      query.andWhere('accommodation.accommodation = :accommodationType', {
+        accommodationType,
+      });
+    }
+
+    return query.getMany();
   }
 
   async findById(id: number): Promise<Accommodation> {

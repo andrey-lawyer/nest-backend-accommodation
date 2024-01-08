@@ -5,6 +5,7 @@ import {
   Param,
   ParseIntPipe,
   Post,
+  Query,
   UploadedFile,
   UseInterceptors,
 } from '@nestjs/common';
@@ -31,8 +32,14 @@ export class AccommodationsController {
   }
 
   @Get()
-  async findAll() {
-    const accommodations = this.accommodationService.findAll();
+  async findAll(
+    @Query('cost') cost: string,
+    @Query('accommodationType') accommodationType: string,
+  ) {
+    const accommodations = this.accommodationService.findAll(
+      cost,
+      accommodationType,
+    );
     return accommodations;
   }
 
