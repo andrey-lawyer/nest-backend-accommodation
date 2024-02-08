@@ -25,9 +25,7 @@ import { CloudinaryModule } from './cloudinary/cloudinary.module';
       database: process.env.POSTGRES_DB,
       entities: [Accommodation],
       synchronize: true,
-      url: process.env.AWS_REGION
-        ? `postgres://${process.env.POSTGRES_USER}:${process.env.POSTGRES_PASSWORD}@aws-0-${process.env.AWS_REGION}.pooler.supabase.com:6543/${process.env.POSTGRES_DB}?options=reference%3D${process.env.REFERENCE_ID}`
-        : undefined,
+      
     }),
     AccommodationsModule,
     FilesModule,
